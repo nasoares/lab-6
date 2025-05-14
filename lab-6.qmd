@@ -116,6 +116,41 @@ remove_outliers(diamonds,
 ```{r}
 #| label: exercise-2
 
+impute_missing <- function(df, ..., impute_fun = mean){
+  
+  #check for non-numeric columns
+  non_num <- df %>%
+    select(...) %>%
+    map_lgl(~ !(is.numeric(.x))) %>%
+    keep(identity) %>%
+    names()
+  
+  if (length(non_num) > 0) {
+    stop("The following columns are not numeric: ",
+         str_c(non_num, collapse = ", "))
+  }
+  
+  #nested function for finding NAs and replacing with user-defined function
+  find_replace <- function(col, nested_fun = impute_fun){
+    col_omit <- na.omit(col)
+    col_fxn <- nested_fun(col_omit)
+    col_replace <- replace_na(col, col_fxn)
+    col_replace
+  }
+  
+  #applying the function to the user-defined columns
+  impute_df <- df %>%
+    select(...) %>%
+    mutate(across(everything(), find_replace)) 
+  
+  #placing imputed columns back into main df
+  merged_df <- df
+  merged_df[,colnames(impute_df)] <- impute_df
+  
+  #final output
+  merged_df
+  
+}
 
 ```
 
