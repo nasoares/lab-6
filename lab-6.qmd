@@ -263,6 +263,15 @@ df_arg_combos
 ```{r}
 #| label: exercise-4
 
+df_arg_analyses <- crossing(
+  impute = c(TRUE, FALSE),
+  remove_outliers = c(TRUE, FALSE), 
+  mod = c(y ~ x1, 
+          y ~ x1 + x2,
+          y ~ x1 + x2 + x3,
+          y ~ x1 + x2 + x3 + x4)
+)
+df_arg_analyses
 ```
 
 ## Iterating Over the Parameters
