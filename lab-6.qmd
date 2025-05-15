@@ -6,6 +6,7 @@ editor: source
 
 ```{r}
 #| warning: false
+#| echo: false
 
 library(tidyverse)
 library(rlang)
@@ -96,6 +97,7 @@ remove_outliers <- function(df, ..., sd_thresh = 3){
 ```{r}
 #| label: exercise-1-test
 #| error: true
+#| warning: false
 
 ## Testing how your function handles multiple input variables
 remove_outliers(diamonds, 
@@ -166,6 +168,7 @@ impute_missing <- function(df, ..., impute_fun = mean){
 ```{r}
 #| label: exercise-2-test
 #| error: true
+#| warning: false
 
 ## Testing how your function handles multiple input variables
 impute_missing(nycflights13::flights, 
@@ -215,6 +218,7 @@ fit_model <- function(df, impute_missing = F, remove_outliers = F,
 
 ```{r}
 #| label: exercise-3-test
+#| warning: false
 
 fit_model(
   diamonds,
@@ -266,10 +270,10 @@ df_arg_combos
 df_arg_analyses <- crossing(
   impute = c(TRUE, FALSE),
   remove_outliers = c(TRUE, FALSE), 
-  mod = c(y ~ x1, 
-          y ~ x1 + x2,
-          y ~ x1 + x2 + x3,
-          y ~ x1 + x2 + x3 + x4)
+  mod = c(price ~ carat, 
+          price ~ carat + cut,
+          price ~ carat + cut + clarity,
+          price ~ carat + cut + clarity + color)
 )
 df_arg_analyses
 ```
@@ -283,5 +287,8 @@ We've arrived at the final step!
 ```{r}
 #| label: exercise-5
 
-
+colnames(df_arg_analyses) <- c("impute_missing", 
+                               "remove_outliers", 
+                               "mod_formula")
+pmap(df_arg_analyses, fit_model, df = diamonds)
 ```
